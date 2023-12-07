@@ -214,6 +214,7 @@ ggsave("scatter plot.pdf", width = 8, height = 16)
 
 
 # Misha's Plot(s)
+# Altogether w/ errors
 KKQ_pilot_data %>%
   filter(age_years != 4, Attn_correct == 1, version == "Pilot2") %>%
   ggplot(aes(x = age_continuous, y = correct, group = test_question, color = factor(interaction(test_question, correct)))) +
@@ -229,7 +230,7 @@ KKQ_pilot_data %>%
   theme(text = element_text(color = "black", size = 24), axis.text = element_text(color = "black", size = 24), 
         axis.ticks = element_line(color = "black"), plot.title = element_text(hjust = 0.5))
 
-# Copy
+# Test q 1
 KKQ_pilot_data %>%
   filter(age_years != 4, Attn_correct == 1, version == "Pilot2", test_question == "test_1") %>%
   ggplot(aes(x = age_continuous, y = correct, color = factor(interaction(test_question, correct)))) +
@@ -246,6 +247,24 @@ KKQ_pilot_data %>%
   theme(text = element_text(color = "black", size = 24), axis.text = element_text(color = "black", size = 24), 
         axis.ticks = element_line(color = "black"), plot.title = element_text(hjust = 0.5), panel.background = element_blank())
 
+# Test q 2
+KKQ_pilot_data %>%
+  filter(age_years != 4, Attn_correct == 1, version == "Pilot2", test_question == "test_1") %>%
+  ggplot(aes(x = age_continuous, y = correct)) +
+  theme_classic() +
+  geom_smooth(method = "glm", se = FALSE,
+              method.args = list(family = "binomial"),
+              aes(group = interaction(test_question), color = test_question)) +
+  geom_jitter(width = 0, height = 0.2, alpha = 0.65, size=3) +
+  scale_x_continuous(limits = c(5.0, 7.0)) +
+  geom_hline(yintercept = 0.5, linetype = "dashed") +
+  scale_y_continuous(breaks = c(0, 1), limits = c(0,1)) +
+  scale_color_manual(values = c("darkred", "navyblue", "darkgrey", "black")) +
+  labs(x = "Age", y = "",  color = "Correct") +
+  theme(text = element_text(color = "black", size = 24), axis.text = element_text(color = "black", size = 24), 
+        axis.ticks = element_line(color = "black"), plot.title = element_text(hjust = 0.5), panel.background = element_blank())
+
+# Test q 1 and 2
 KKQ_pilot_data %>%
   filter(age_years != 4, Attn_correct == 1, version == "Pilot2") %>%
   ggplot(aes(x = age_continuous, y = correct)) +
@@ -256,13 +275,31 @@ KKQ_pilot_data %>%
   geom_jitter(width = 0, height = 0.2, alpha = 0.65, size=3) +
   scale_x_continuous(limits = c(5.0, 7.0)) +
   geom_hline(yintercept = 0.5, linetype = "dashed") +
-  scale_y_continuous(breaks = c(0, 1)) +
-  scale_color_manual(values = c("darkred", "navyblue", "darkgrey", "black"))
+  scale_y_continuous(breaks = c(0, 1), limits = c(0,1)) +
+  scale_color_manual(values = c("darkred", "navyblue", "darkgrey", "black")) +
   labs(x = "Age", y = "",  color = "Correct") +
   theme(text = element_text(color = "black", size = 24), axis.text = element_text(color = "black", size = 24), 
         axis.ticks = element_line(color = "black"), plot.title = element_text(hjust = 0.5), panel.background = element_blank())
 
-ggsave("pilot 2_2 misha scatter plot.png")
+# Copy but for pilot 1
+KKQ_pilot_data %>%
+  filter(age_years != 4, Attn_correct == 1, version == "Pilot1") %>%
+  ggplot(aes(x = age_continuous, y = correct)) +
+  theme_classic() +
+  geom_smooth(method = "glm", se = FALSE,
+              method.args = list(family = "binomial"),
+              aes(group = interaction(test_question), color = test_question)) +
+  geom_jitter(width = 0, height = 0.2, alpha = 0.65, size=3) +
+  scale_x_continuous(limits = c(5.0, 7.0)) +
+  geom_hline(yintercept = 0.5, linetype = "dashed") +
+  scale_y_continuous(breaks = c(0, 1), limits = c(0,1)) +
+  scale_color_manual(values = c("darkred", "navyblue", "darkgrey", "black")) +
+  labs(x = "Age", y = "",  color = "Correct") +
+  theme(text = element_text(color = "black", size = 24), axis.text = element_text(color = "black", size = 24), 
+        axis.ticks = element_line(color = "black"), plot.title = element_text(hjust = 0.5), panel.background = element_blank())
+
+
+ggsave("pilot 1_1 misha scatter plot.png")
 
 pilot_2_data <- KKQ_pilot_data %>%
   filter(version == "Pilot2")
@@ -306,8 +343,9 @@ pilot_2_data %>%
     plot.title = element_text(hjust = 0.5)
   )
 
+#Stacked bars togetha' (pilot 2 test 1 and 2)
 pilot_2_data %>%
-  filter(age_years != 4, Attn_correct == 1) %>%
+  filter(age_years != 4, Attn_correct == 1, version == "Pilot2") %>%
   ggplot(aes(x = test_question, fill = factor(correct))) +
   geom_bar(stat = "count", position = "stack", color = "black") +
   labs(y = "Number of Children") +
@@ -319,6 +357,24 @@ pilot_2_data %>%
     axis.ticks = element_line(color = "black"),
     plot.title = element_text(hjust = 0.5)
   )
+
+#Stacked bars not togetha' (pilot 1 test 1)
+pilot_1_data %>%
+  filter(age_years != 4, Attn_correct == 1, version == "Pilot1") %>%
+  ggplot(aes(x = test_question, fill = factor(correct))) +
+  geom_bar(stat = "count", position = "stack", color = "black") +
+  labs(y = "Number of Children") +
+  theme_classic() +
+  scale_fill_manual(values = c("1" = "darkseagreen3", "0" = "darksalmon")) +
+  theme(
+    text = element_text(color = "black", size = 24),
+    axis.text = element_text(color = "black", size = 24),
+    axis.ticks = element_line(color = "black"),
+    plot.title = element_text(hjust = 0.5)
+  )
+
+ggsave("pilot 1_1 misha stacked bar.png")
+
 
 pilot_2_data %>%
   filter(age_years != 4, Attn_correct == 1, test_question == "test_1") %>%
